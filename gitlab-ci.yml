@@ -1,0 +1,76 @@
+variables:
+  DH: registry.cobuy.online
+  PROJECT: laravel
+  PART: api
+
+stages:
+  - build
+  - migrate
+  - deploy
+
+.stage-env:
+  variables:
+    ENV: $ENV_STAGE
+    CONTAINERS: app_stage nginx_stage
+  only:
+    - dev
+
+.prod-env:
+  variables:
+    ENV: $ENV_PROD
+    CONTAINERS: app_prod nginx_prod
+  only:
+    - main
+
+.build_job:
+  stage: build
+  script:
+    - cp -f $ENV ./src/.env
+    - docker compose build $CONTAINERS
+
+.migrate_job:
+  stage: migrate
+  script:
+    - cp -f $ENV ./src/.env
+    - docker build -f dockerfiles/migrate.Dockerfile -t migrate_tmp .
+    - docker run --rm migrate_tmp
+
+.deploy_job:
+  stage: deploy
+  script:
+    - docker compose up -d $CONTAINERS
+
+build_stage:
+  extends:
+    - .stage-env
+    - .build_job
+
+migrate_stage:
+  needs: [build_stage]
+  when: on_success
+  extends:
+    - .stage-env
+    - .migrate_job
+
+deploy_stage:
+  needs: [migrate_stage]
+  extends:
+    - .stage-env
+    - .deploy_job
+
+build_prod:
+  extends:
+    - .prod-env
+    - .build_job
+
+migrate_prod:
+  needs: [build_prod]
+  extends:
+    - .prod-env
+    - .migrate_job
+
+deploy_prod:
+  needs: [migrate_prod]
+  extends:
+    - .prod-env
+    - .deploy_job
