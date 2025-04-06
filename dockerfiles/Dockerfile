@@ -46,7 +46,8 @@ COPY --from=builder /usr/local/etc/php /usr/local/etc/php
 
 WORKDIR /var/www/html
 
-RUN php artisan storage:link
+RUN php artisan key:generate \
+    && php artisan storage:link
 
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
