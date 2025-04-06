@@ -42,6 +42,7 @@ COPY ./configs/nginx.conf /etc/nginx/nginx.conf
 COPY ./configs/nginx.prod.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=builder /var/www/html /var/www/html
+COPY --from=builder /usr/local/etc/php /usr/local/etc/php
 
 WORKDIR /var/www/html
 
