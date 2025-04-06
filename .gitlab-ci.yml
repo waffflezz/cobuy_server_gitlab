@@ -11,14 +11,14 @@ stages:
 .stage-env:
   variables:
     ENV: $ENV_STAGE
-    CONTAINERS: app_stage nginx_stage
+    CONTAINERS: app_stage
   only:
     - dev
 
 .prod-env:
   variables:
     ENV: $ENV_PROD
-    CONTAINERS: app_prod nginx_prod
+    CONTAINERS: app_prod
   only:
     - main
 
