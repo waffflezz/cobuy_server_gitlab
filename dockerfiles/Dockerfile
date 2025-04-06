@@ -42,8 +42,8 @@ COPY ./configs/nginx.prod.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=builder /var/www/html /var/www/html
 
-COPY ./configs/php.stage.ini /etc/php/8.3/fpm/conf.d/40-custom.ini
-COPY ./configs/php.stage.ini /etc/php/8.3/cli/conf.d/40-custom.ini
+COPY ./configs/php.prod.ini /etc/php/8.3/fpm/conf.d/40-custom.ini
+COPY ./configs/php.prod.ini /etc/php/8.3/cli/conf.d/40-custom.ini
 
 WORKDIR /var/www/html
 
