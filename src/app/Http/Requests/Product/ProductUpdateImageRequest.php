@@ -22,7 +22,7 @@ class ProductUpdateImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'nullable|image|max:1024',
+            'image' => 'nullable|image|max:10240',
         ];
     }
 }
