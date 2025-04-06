@@ -13,7 +13,6 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 COPY ./src /var/www/html
-COPY ./configs/php-fpm.prod.ini /usr/local/etc/php/conf.d/99-custom.ini
 
 RUN composer install --no-interaction --no-progress --optimize-autoloader
 
@@ -42,7 +41,9 @@ COPY ./configs/nginx.conf /etc/nginx/nginx.conf
 COPY ./configs/nginx.prod.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=builder /var/www/html /var/www/html
-COPY --from=builder /usr/local/etc/php /usr/local/etc/php
+
+COPY ./configs/php.stage.ini /etc/php/8.3/fpm/conf.d/40-custom.ini
+COPY ./configs/php.stage.ini /etc/php/8.3/cli/conf.d/40-custom.ini
 
 WORKDIR /var/www/html
 
