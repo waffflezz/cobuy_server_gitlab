@@ -1,4 +1,4 @@
-FROM php:8.3-fpm-alpine
+FROM php:8.3-fpm-alpine AS builder
 
 RUN apk add --no-cache \
     git unzip bash icu-dev libzip-dev \
@@ -17,8 +17,37 @@ COPY ./configs/php-fpm.prod.ini /usr/local/etc/php/conf.d/99-custom.ini
 
 RUN composer install --no-interaction --no-progress --optimize-autoloader
 
-RUN chown -R www-data:www-data /var/www/html
+FROM nginx:latest
 
-RUN chmod -R 755 /var/www/html
+RUN apt-get update && apt-get install -y \
+    lsb-release \
+    ca-certificates \
+    apt-transport-https \
+    curl \
+    && curl -fsSL https://packages.sury.org/php/README.txt | bash -x \
+    && apt-get update && apt-get install -y \
+    php8.3-fpm \
+    php8.3-cli \
+    php8.3-mbstring \
+    php8.3-xml \
+    php8.3-pdo \
+    php8.3-pgsql \
+    php8.3-zip \
+    php8.3-intl \
+    php8.3-opcache \
+    php8.3-gd \
+    && apt-get clean
 
-CMD ["php-fpm", "-F"]
+COPY ./configs/nginx.conf /etc/nginx/nginx.conf
+COPY ./configs/nginx.prod.conf /etc/nginx/conf.d/default.conf
+
+COPY --from=builder /var/www/html /var/www/html
+
+WORKDIR /var/www/html
+
+RUN php artisan storage:link
+
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+CMD php-fpm8.3 && nginx -g 'daemon off;'
