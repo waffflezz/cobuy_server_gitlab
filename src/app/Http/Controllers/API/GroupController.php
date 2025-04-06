@@ -7,6 +7,7 @@ use App\Events\GroupChanged;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Group\GroupStoreRequest;
 use App\Http\Requests\Group\GroupUpdateImageRequest;
+use App\Http\Requests\Group\GroupUpdateRequest;
 use App\Http\Resources\Group\GroupImageResource;
 use App\Http\Resources\Group\GroupResource;
 use App\Models\Group;
@@ -80,7 +81,7 @@ class GroupController extends Controller
      * Update the specified resource in storage.
      * @throws AuthorizationException
      */
-    public function update(GroupStoreRequest $request, string $id): GroupResource
+    public function update(GroupUpdateRequest $request, string $id): GroupResource
     {
         $data = $request->validated();
 
