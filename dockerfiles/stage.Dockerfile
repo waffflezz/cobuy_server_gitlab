@@ -15,9 +15,13 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-COPY --chown=www-data:www-data src /var/www/html
+COPY ./src /var/www/html
 COPY configs/php-fpm.stage.ini /usr/local/etc/php/conf.d/99-custom.ini
 
 RUN composer install --no-interaction --no-progress --optimize-autoloader
+
+RUN chown -R www-data:www-data /var/www/html
+
+RUN chmod -R 755 /var/www/html
 
 CMD ["php-fpm", "-F"]
