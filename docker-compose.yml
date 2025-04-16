@@ -27,25 +27,21 @@ services:
     ports:
       - "8000:8000"
     entrypoint: [ "sh", "-c", "php artisan migrate && php artisan serve --host=0.0.0.0" ]
+    depends_on:
+      - db_dev
 
-#  nginx_prod:
-#    build:
-#      context: .
-#      dockerfile: dockerfiles/nginx.Dockerfile
-#    container_name: nginx_prod
-#    ports:
-#      - "9003:80"
-#    depends_on:
-#      - app_prod
-#    restart: always
+  db_dev:
+    image: postgres:latest
+    container_name: postgres_dev
+    environment:
+      POSTGRES_USER: laravel
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: laravel_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
-#  nginx_stage:
-#    build:
-#      context: .
-#      dockerfile: dockerfiles/nginx.Dockerfile
-#    container_name: nginx_stage
-#    ports:
-#      - "9004:80"
-#    depends_on:
-#      - app_stage
-#    restart: always
+volumes:
+  postgres_data:
