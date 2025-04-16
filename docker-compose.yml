@@ -5,6 +5,8 @@ services:
       context: .
       dockerfile: dockerfiles/Dockerfile
     container_name: laravel_prod
+    volumes:
+      - storage_prod:/var/www/html/storage
     ports:
       - "9003:80"
     restart: always
@@ -14,6 +16,8 @@ services:
       context: .
       dockerfile: dockerfiles/stage.Dockerfile
     container_name: laravel_stage
+    volumes:
+      - storage_stage:/var/www/html/storage
     ports:
       - "9004:80"
     restart: always
@@ -23,29 +27,13 @@ services:
       context: .
       dockerfile: dockerfiles/stage.Dockerfile
     container_name: laravel_dev
+    volumes:
+      - storage_stage:/var/www/html/storage
     restart: no
     ports:
       - "8000:8000"
     entrypoint: [ "sh", "-c", "php artisan migrate && php artisan serve --host=0.0.0.0" ]
 
-#  nginx_prod:
-#    build:
-#      context: .
-#      dockerfile: dockerfiles/nginx.Dockerfile
-#    container_name: nginx_prod
-#    ports:
-#      - "9003:80"
-#    depends_on:
-#      - app_prod
-#    restart: always
-
-#  nginx_stage:
-#    build:
-#      context: .
-#      dockerfile: dockerfiles/nginx.Dockerfile
-#    container_name: nginx_stage
-#    ports:
-#      - "9004:80"
-#    depends_on:
-#      - app_stage
-#    restart: always
+volumes:
+  storage_prod:
+  storage_stage:
