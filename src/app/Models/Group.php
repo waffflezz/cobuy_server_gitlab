@@ -20,11 +20,11 @@ class Group extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(UserModel::class);
     }
     public function owner(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->belongsTo(UserModel::class, 'owner_id');
     }
 
     public function shoppingLists(): HasMany

@@ -56,12 +56,12 @@ class GroupInviteController extends Controller
         }
 
         if ($group->users()->where('users.id', Auth::id())->exists()) {
-            throw new BadRequestHttpException('User already invited');
+            throw new BadRequestHttpException('UserModel already invited');
         }
 
         $group->users()->syncWithoutDetaching([Auth::user()->id]);
 
-        return response()->json(['message' => 'User add to group!']);
+        return response()->json(['message' => 'UserModel add to group!']);
 
     }
 }

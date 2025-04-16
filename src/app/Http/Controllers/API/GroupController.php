@@ -153,7 +153,7 @@ class GroupController extends Controller
         Gate::authorize('groupOwner', $group);
 
         if (!$group->users()->where('users.id', $data['userId'])->exists()) {
-            return new ModelNotFoundException('User ' . $user->name . ' not found');
+            return new ModelNotFoundException('UserModel ' . $user->name . ' not found');
         }
 
         $group->users()->detach($data['userId']);

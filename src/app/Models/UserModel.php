@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Domain\Entities\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,7 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class UserModel extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
 
@@ -56,5 +57,19 @@ class User extends Authenticatable
     public function ownedGroups(): HasMany
     {
         return $this->hasMany(Group::class, 'owner_id');
+    }
+
+    public function toDomain(): User
+    {
+        return new User(
+            $this->id,
+            $this->name,
+            $this->email,
+            $this->email_verified_at ? new \DateTime($this->email_verified_at) : null,
+            $this->password,
+            $this->remember_token,
+            new \DateTime($this->created_at),
+            new \DateTime($this->updated_at)
+        );
     }
 }

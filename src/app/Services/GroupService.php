@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Models\User;
+use App\Models\UserModel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class GroupService
 {
-    public function getGroupByUser(User $user, string $groupId)
+    public function getGroupByUser(UserModel $user, string $groupId)
     {
         $group = $user->groups()->find($groupId);
         if (!$group) {

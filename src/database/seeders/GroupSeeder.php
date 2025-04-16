@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Group;
-use App\Models\User;
+use App\Models\UserModel;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,7 +14,7 @@ class GroupSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::first();
+        $user = UserModel::first();
 
         if (!$user) {
             $this->command->info('Тестовый пользователь не найден. Пожалуйста, создайте пользователя перед запуском сидера.');

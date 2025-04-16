@@ -3,7 +3,7 @@
 namespace App\Http\Resources\Product;
 
 use App\Http\Resources\UserResource;
-use App\Models\User;
+use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,7 +16,7 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $buyer = User::find($this->buyer_id);
+        $buyer = UserModel::find($this->buyer_id);
 
         return [
             'id' => $this->id,

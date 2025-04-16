@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\API\Auth;
 
+use App\Domain\UseCase\Auth\RegisterUseCaseInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
-use App\Models\User;
+use App\Models\UserModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,13 +18,19 @@ use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
 {
+    public function __construct(
+        private readonly RegisterUseCaseInterface $registerUseCase,
+    ) {}
+
     public function register(RegisterRequest $request): UserResource
     {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        $request->validated();
+
+        $user = $this->registerUseCase->register(
+            $request->name,
+            $request->email,
+            $request->password
+        );
 
         return new UserResource($user);
     }
@@ -35,10 +42,10 @@ class RegisterController extends Controller
     {
         $request->validated();
 
-        $user = User::where('email', $request->email)->first();
+        $user = UserModel::where('email', $request->email)->first();
         if (!$user) {
             throw ValidationException::withMessages([
-                'email' => ['User with this email does not exist.'],
+                'email' => ['UserModel with this email does not exist.'],
             ]);
         }
 
