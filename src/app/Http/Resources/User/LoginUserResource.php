@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Group;
+namespace App\Http\Resources\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class GroupImageResource extends JsonResource
+class LoginUserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,7 +15,9 @@ class GroupImageResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'avaUrl' => $this->image ? asset('storage/groups/' . basename($this->image)) : null
+            'accessToken' => $this->token,
+            'tokenType' => 'Bearer',
+            'user' => new UserResource($this->user),
         ];
     }
 }

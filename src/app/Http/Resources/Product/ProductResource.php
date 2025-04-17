@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Product;
 
-use App\Http\Resources\UserResource;
+use App\Http\Resources\User\UserResource;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

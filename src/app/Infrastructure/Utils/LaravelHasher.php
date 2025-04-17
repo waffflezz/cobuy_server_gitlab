@@ -12,4 +12,9 @@ class LaravelHasher implements HasherInterface
     {
         return Hash::make($value);
     }
+
+    public function check(string $value, string $hashedValue): bool
+    {
+        return Hash::check($value, $hashedValue);
+    }
 }
