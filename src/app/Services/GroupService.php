@@ -13,7 +13,7 @@ class GroupService
     {
         $group = $user->groups()->find($groupId);
         if (!$group) {
-            throw new ModelNotFoundException('Group not found by ID: ' . $groupId);
+            throw new ModelNotFoundException('GroupModel not found by ID: ' . $groupId);
         }
 
         return $group;

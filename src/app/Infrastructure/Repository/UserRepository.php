@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Infrastructure\Repository\User;
+namespace App\Infrastructure\Repository;
 
 use App\Domain\Entities\User;
 use App\Domain\Exceptions\InvalidTokenException;
 use App\Domain\Exceptions\UserNotFoundException;
-use App\Domain\UseCase\Auth\UserRepositoryInterface;
+use App\Domain\UseCase\User\UserRepositoryInterface;
 use App\Models\UserModel;
 use Laravel\Sanctum\PersonalAccessToken;
 

@@ -2,10 +2,12 @@
 
 namespace App\Domain\UseCase\Auth;
 
+use App\Domain\DTO\LoginResultDTO;
 use App\Domain\Entities\User;
 use App\Domain\Exceptions\InvalidCredentialsException;
 use App\Domain\Exceptions\UserNotFoundException;
 use App\Domain\Services\Utils\Hasher\HasherInterface;
+use App\Domain\UseCase\User\UserRepositoryInterface;
 
 class RegisterUseCase implements RegisterUseCaseInterface
 {
@@ -41,9 +43,9 @@ class RegisterUseCase implements RegisterUseCaseInterface
         return new LoginResultDTO($user, $token);
     }
 
-    public function logout(string $token): void
+    public function logout(int $userId): void
     {
-        $user = $this->userRepository->findByToken($token);
+        $user = $this->userRepository->findById($userId);
         $this->userRepository->deleteToken($user->id);
     }
 }

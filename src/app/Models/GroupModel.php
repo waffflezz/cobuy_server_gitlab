@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
+use App\Domain\Entities\Group;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Group extends Model
+class GroupModel extends Model
 {
     use HasFactory;
+
+    protected $table = 'groups';
 
     protected $fillable = [
         'name',
@@ -20,7 +23,7 @@ class Group extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(UserModel::class);
+        return $this->belongsToMany(UserModel::class, 'group_user', 'group_id', 'user_id');
     }
     public function owner(): BelongsTo
     {
@@ -30,5 +33,20 @@ class Group extends Model
     public function shoppingLists(): HasMany
     {
         return $this->hasMany(ShoppingList::class);
+    }
+
+    public function toDomain(): Group
+    {
+        return new Group(
+            $this->id,
+            $this->name,
+            $this->iamge,
+            $this->owner_id,
+            new \DateTime($this->created_at),
+            new \DateTime($this->updated_at),
+            $this->users->map(fn(UserModel $userModel) => $userModel->toDomain()),
+            [],
+            $this->invite_link
+        );
     }
 }

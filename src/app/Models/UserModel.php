@@ -53,12 +53,12 @@ class UserModel extends Authenticatable
 
     public function groups(): BelongsToMany
     {
-        return $this->belongsToMany(Group::class);
+        return $this->belongsToMany(GroupModel::class, 'group_user', 'user_id', 'group_id');
     }
 
     public function ownedGroups(): HasMany
     {
-        return $this->hasMany(Group::class, 'owner_id');
+        return $this->hasMany(GroupModel::class, 'owner_id');
     }
 
     public function toDomain(): User
@@ -71,7 +71,8 @@ class UserModel extends Authenticatable
             $this->password,
             $this->remember_token,
             new \DateTime($this->created_at),
-            new \DateTime($this->updated_at)
+            new \DateTime($this->updated_at),
+            $this->groups->map(fn(GroupModel $groupModel) => $groupModel->toDomain())->all(),
         );
     }
 }

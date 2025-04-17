@@ -59,10 +59,9 @@ class RegisterController extends Controller
         }
     }
 
-    public function logout(Request $request): JsonResponse
+    public function logout(): JsonResponse
     {
-        $token = $request->bearerToken();
-        $this->registerUseCase->logout($token);
+        $this->registerUseCase->logout(Auth::id());
 
         return response()->json([
             'message' => 'Logged out successfully'

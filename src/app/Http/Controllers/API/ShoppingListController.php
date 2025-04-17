@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\List\ShoppingListStoreRequest;
 use App\Http\Requests\List\ShoppingListUpdateRequest;
 use App\Http\Resources\ShoppingListResource;
-use App\Models\Group;
+use App\Models\GroupModel;
 use App\Models\ShoppingList;
 use App\Services\ShoppingListService;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -45,7 +45,7 @@ class ShoppingListController extends Controller
             throw new BadRequestHttpException('group_id not allowed');
         }
 
-        Gate::authorize('groupMember', Group::find($group_id));
+        Gate::authorize('groupMember', GroupModel::find($group_id));
 
         $shoppingLists = ShoppingList::where('group_id', $group_id)->latest()->get();
 
@@ -65,7 +65,7 @@ class ShoppingListController extends Controller
         $groupId = $data['groupId'];
         $group = $user->groups()->find($groupId);
         if (!$group) {
-            throw new ModelNotFoundException('Group by ID: ' . $groupId . ' not found');
+            throw new ModelNotFoundException('GroupModel by ID: ' . $groupId . ' not found');
         }
 
         Gate::authorize('groupMember', $group);

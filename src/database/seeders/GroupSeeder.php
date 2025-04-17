@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Group;
+use App\Models\GroupModel;
 use App\Models\UserModel;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,16 +21,16 @@ class GroupSeeder extends Seeder
             return;
         }
 
-        $group1 = Group::create([
-            'name' => 'Test Group 1',
+        $group1 = GroupModel::create([
+            'name' => 'Test GroupModel 1',
             'image' => null,
             'owner_id' => $user->id,
         ]);
         $group1->users()->attach($user);
 
 
-        $group2 = Group::create([
-            'name' => 'Test Group 2',
+        $group2 = GroupModel::create([
+            'name' => 'Test GroupModel 2',
             'image' => null,
             'owner_id' => $user->id,
         ]);

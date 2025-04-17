@@ -4,7 +4,7 @@ namespace App\Http\Requests\Group;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class GroupUpdateImageRequest extends FormRequest
+class GroupUpdateImageRequest extends GroupRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Domain\DTO\FileDTO;
+use App\Domain\Services\File\FileStorageInterface;
+use App\Domain\UseCase\Group\GroupUseCaseInterface;
 use App\Events\EventType;
 use App\Events\GroupChanged;
 use App\Http\Controllers\Controller;
@@ -10,7 +13,7 @@ use App\Http\Requests\Group\GroupUpdateImageRequest;
 use App\Http\Requests\Group\GroupUpdateRequest;
 use App\Http\Resources\Group\GroupImageResource;
 use App\Http\Resources\Group\GroupResource;
-use App\Models\Group;
+use App\Models\GroupModel;
 use App\Services\GroupService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -23,7 +26,10 @@ use Illuminate\Support\Facades\Gate;
 class GroupController extends Controller
 {
     private GroupService $groupService;
-    public function __construct(GroupService $groupService)
+    public function __construct(
+        private readonly GroupUseCaseInterface $groupUseCase,
+        GroupService $groupService
+    )
     {
         $this->groupService = $groupService;
     }
@@ -31,10 +37,9 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
-        $user = Auth::user();
-        $groups = $user->groups()->latest()->get();
+        $groups = $this->groupUseCase->getAll($request->bearerToken());
 
         return GroupResource::collection($groups);
     }
@@ -45,17 +50,13 @@ class GroupController extends Controller
     public function store(GroupStoreRequest $request): GroupResource
     {
         $data = $request->validated();
-        $data['owner_id'] = Auth::id();
+        $fileDTO = $request->getFileDTO();
 
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $path = $file->storeAs('public/groups', time() . '.' . $extension);
-            $data['image'] = $path;
-        }
-
-        $group = Group::create($data);
-        $group->users()->attach(Auth::id());
+        $group = $this->groupUseCase->create(
+            Auth::id(),
+            $data['name'],
+            $fileDTO,
+        );
 
         broadcast(new GroupChanged($group, EventType::Create))->toOthers();
 

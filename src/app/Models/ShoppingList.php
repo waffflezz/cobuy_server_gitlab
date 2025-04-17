@@ -23,7 +23,7 @@ class ShoppingList extends Model
 
     public function group(): BelongsTo
     {
-        return $this->belongsTo(Group::class);
+        return $this->belongsTo(GroupModel::class);
     }
 
     public function products(): HasMany

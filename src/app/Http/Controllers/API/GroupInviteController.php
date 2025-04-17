@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Group;
+use App\Models\GroupModel;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -18,9 +18,9 @@ class GroupInviteController extends Controller
      */
     public function getInviteLink(string $groupId)
     {
-        $group = Group::find($groupId);
+        $group = GroupModel::find($groupId);
         if (!$group) {
-            throw new ModelNotFoundException('Group not found');
+            throw new ModelNotFoundException('GroupModel not found');
         }
 
         if (!$group->users->contains(Auth::user())) {
@@ -50,9 +50,9 @@ class GroupInviteController extends Controller
 
         $groupId = $token->getPayload()['groupId'];
 
-        $group = Group::find($groupId);
+        $group = GroupModel::find($groupId);
         if (!$group) {
-            throw new ModelNotFoundException('Group with ID: ' . $groupId . ' not found');
+            throw new ModelNotFoundException('GroupModel with ID: ' . $groupId . ' not found');
         }
 
         if ($group->users()->where('users.id', Auth::id())->exists()) {
