@@ -2,77 +2,40 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Events\EventType;
-use App\Events\ListChanged;
-use App\Events\ProductChanged;
+use App\Domain\UseCase\Product\ProductUseCaseInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\ProductStoreRequest;
 use App\Http\Requests\Product\ProductUpdateImageRequest;
 use App\Http\Requests\Product\ProductUpdateRequest;
 use App\Http\Resources\Product\ProductImageResource;
 use App\Http\Resources\Product\ProductResource;
-use App\Models\Product;
-use App\Models\ShoppingList;
-use App\Services\ProductService;
-use App\Services\ShoppingListService;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
-    private ProductService $productService;
-    private ShoppingListService $shoppingListService;
-
-    public function __construct(ProductService $productService, ShoppingListService $shoppingListService)
-    {
-        $this->productService = $productService;
-        $this->shoppingListService = $shoppingListService;
-    }
+    public function __construct(
+        private readonly ProductUseCaseInterface $productUseCase,
+    ) {}
 
     /**
      * Display a listing of the resource.
-     * @throws AuthorizationException
      */
     public function index(string $shoppingListId)
     {
-        $shoppingList = ShoppingList::find($shoppingListId);
-        if (!$shoppingList) {
-            throw new ModelNotFoundException('Shopping list by ID: ' . $shoppingListId . ' not found');
-        }
-
-        Gate::authorize('groupMember', $shoppingList->group);
-
-        $products = $shoppingList->products;
+        $products = $this->productUseCase->findAll($shoppingListId);
 
         return ProductResource::collection($products);
     }
 
     /**
      * Store a newly created resource in storage.
-     * @throws AuthorizationException
      */
     public function store(ProductStoreRequest $request, string $shoppingListId)
     {
         $data = $request->validated();
 
-        $shoppingList = ShoppingList::find($shoppingListId);
-        if (!$shoppingList) {
-            throw new ModelNotFoundException('Shopping list by ID: ' . $shoppingListId . ' not found');
-        }
-
-        Gate::authorize('groupMember', $shoppingList->group);
-
-        $product = $shoppingList->products()->create($data);
-        $product->shopping_list_id = $shoppingListId;
-        $product->status = 0;
-        $product->save();
-
-        broadcast(new ProductChanged($product, EventType::Create))->toOthers();
-        broadcast(new ListChanged($shoppingList, EventType::Update))->toOthers();
+        $product = $this->productUseCase->create($shoppingListId, $data);
 
         return new ProductResource($product);
     }
@@ -82,9 +45,7 @@ class ProductController extends Controller
      */
     public function show(string $shoppingListId, string $id)
     {
-        $product = $this->productService->getProductByShoppingListId($shoppingListId, $id);
-
-        Gate::authorize('groupMember', $product->shoppingList->group);
+        $product = $this->productUseCase->findById($shoppingListId, $id);
 
         return new ProductResource($product);
     }
@@ -96,23 +57,7 @@ class ProductController extends Controller
     {
         $data = $request->validated();
 
-        $shoppingList = $this->shoppingListService->getShoppingList(Auth::user(), $shoppingListId);
-        $product = $this->productService->getProductByShoppingListId($shoppingListId, $id);
-
-        Gate::authorize('groupMember', $product->shoppingList->group);
-
-        $product->update($data);
-        if (isset($data['status'])) {
-            if ($data['status'] !== Product::NONE_STATUS) {
-                $product->buyer_id = Auth::id();
-            } else {
-                $product->buyer_id = null;
-            }
-        }
-        $product->save();
-
-        broadcast(new ProductChanged($product, EventType::Update))->toOthers();
-        broadcast(new ListChanged($shoppingList, EventType::Update))->toOthers();
+        $product = $this->productUseCase->update(Auth::id(), $shoppingListId, $id, $data);
 
         return new ProductResource($product);
     }
@@ -122,57 +67,31 @@ class ProductController extends Controller
      */
     public function destroy(string $shoppingListId, string $id)
     {
-        $product = $this->productService->getProductByShoppingListId($shoppingListId, $id);
-
-        Gate::authorize('groupMember', $product->shoppingList->group);
-
-        $product->delete();
-
-        broadcast(new ProductChanged($product, EventType::Delete))->toOthers();
+        $this->productUseCase->delete($shoppingListId, $id);
 
         return response()->json(null, 204);
     }
 
     public function showImage(string $shoppingListId, string $productId)
     {
-        $product = $this->productService->getProductByShoppingListId($shoppingListId, $productId);
-
-        Gate::authorize('groupMember', $product->shoppingList->group);
+        $product = $this->productUseCase->findById($shoppingListId, $productId);
 
         return new ProductImageResource($product);
     }
 
     public function updateImage(ProductUpdateImageRequest $request, string $shoppingListId, string $productId)
     {
-        $data = $request->validated();
+        $request->validated();
+        $file = $request->getFileDTO();
 
-        $product = $this->productService->getProductByShoppingListId($shoppingListId, $productId);
-
-        Gate::authorize('groupMember', $product->shoppingList->group);
-
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $path = $file->storeAs('public/products', time() . '.' . $extension);
-            $data['image'] = $path;
-        }
-
-        $product->update($data);
-
-        broadcast(new ProductChanged($product, EventType::Update))->toOthers();
+        $product = $this->productUseCase->uploadImage($shoppingListId, $productId, $file);
 
         return new ProductImageResource($product);
     }
 
     public function destroyImage(string $shoppingListId, string $productId): JsonResponse
     {
-        $product = $this->productService->getProductByShoppingListId($shoppingListId, $productId);
-
-        Gate::authorize('groupMember', $product->shoppingList->group);
-
-        $product->update(['image' => null]);
-
-        broadcast(new ProductChanged($product, EventType::Delete))->toOthers();
+        $this->productUseCase->destroyImage($shoppingListId, $productId);
 
         return response()->json(null, 204);
     }

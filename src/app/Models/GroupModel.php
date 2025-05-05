@@ -32,7 +32,7 @@ class GroupModel extends Model
 
     public function shoppingLists(): HasMany
     {
-        return $this->hasMany(ShoppingList::class);
+        return $this->hasMany(ShoppingListModel::class, 'group_id');
     }
 
     public function toDomain(): Group
@@ -44,8 +44,8 @@ class GroupModel extends Model
             $this->owner_id,
             new \DateTime($this->created_at),
             new \DateTime($this->updated_at),
-            $this->users->map(fn(UserModel $userModel) => $userModel->toDomain()),
-            [],
+            $this->users->map(fn(UserModel $userModel) => $userModel->toDomain())->all(),
+            $this->shoppingLists->map(fn(ShoppingListModel $shoppingListModel) => $shoppingListModel->toDomain())->all(),
             $this->invite_link
         );
     }

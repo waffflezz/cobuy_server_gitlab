@@ -2,8 +2,8 @@
 
 namespace App\Events;
 
+use App\Domain\Entities\Product;
 use App\Http\Resources\Product\ProductResource;
-use App\Models\Product;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
@@ -34,7 +34,7 @@ class ProductChanged implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new Channel('product-changed.' . $this->product->shopping_list_id),
+            new Channel('product-changed.' . $this->product->shoppingListId),
         ];
     }
 

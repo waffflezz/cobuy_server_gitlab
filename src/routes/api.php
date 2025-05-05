@@ -3,8 +3,8 @@
 use App\Http\Controllers\API\Auth\OAuthController;
 use App\Http\Controllers\API\Auth\RegisterController;
 use App\Http\Controllers\API\EmailVerificationController;
-use App\Http\Controllers\API\GroupController;
-use App\Http\Controllers\API\GroupInviteController;
+use App\Http\Controllers\API\Group\GroupController;
+use App\Http\Controllers\API\Group\GroupInviteController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ShoppingListController;
 use Illuminate\Support\Facades\Route;

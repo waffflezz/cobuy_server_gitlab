@@ -71,8 +71,7 @@ class UserModel extends Authenticatable
             $this->password,
             $this->remember_token,
             new \DateTime($this->created_at),
-            new \DateTime($this->updated_at),
-            $this->groups->map(fn(GroupModel $groupModel) => $groupModel->toDomain())->all(),
+            new \DateTime($this->updated_at)
         );
     }
 }

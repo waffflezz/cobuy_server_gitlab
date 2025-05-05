@@ -2,8 +2,8 @@
 
 namespace App\Events;
 
+use App\Domain\Entities\ShoppingList;
 use App\Http\Resources\ShoppingListResource;
-use App\Models\ShoppingList;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
@@ -34,7 +34,7 @@ class ListChanged implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new Channel('list-changed.' . $this->shoppingList->group_id),
+            new Channel('list-changed.' . $this->shoppingList->groupId),
         ];
     }
 

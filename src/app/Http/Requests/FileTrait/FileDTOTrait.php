@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Group;
+namespace App\Http\Requests\FileTrait;
 
 use App\Domain\DTO\FileDTO;
-use Illuminate\Foundation\Http\FormRequest;
 
-class GroupRequest extends FormRequest
+trait FileDTOTrait
 {
     public function getFileDTO(): ?FileDTO
     {

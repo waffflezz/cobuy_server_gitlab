@@ -19,10 +19,10 @@ class GroupResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'avaUrl' => $this->image ? asset('storage/groups/' . basename($this->image)) : null,
-            'inviteLink' => $this->invite_link,
-            'owner' => $this->owner_id,
-            'membersCount' => $this->users->count(),
-            'listsCount' => $this->shoppingLists->count(),
+            'inviteLink' => $this->inviteLink,
+            'owner' => $this->ownerId,
+            'membersCount' => count($this->users),
+            'listsCount' => count($this->shoppingLists),
             'members' => UserResource::collection($this->users)
         ];
     }

@@ -29,7 +29,7 @@ class UserRepository implements UserRepositoryInterface
     public function findByEmail(string $email): ?User
     {
         $user = UserModel::where('email', $email)->first();
-        return $user ? $user->toDomain() : null;
+        return $user?->toDomain();
     }
 
     /**
