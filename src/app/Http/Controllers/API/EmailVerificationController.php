@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Mail\SendPinCode;
 use App\Models\EmailVerification;
-use App\Models\User;
+use App\Models\UserModel;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -22,7 +22,7 @@ class EmailVerificationController extends Controller
             'email' => 'required|email|exists:users,email',
         ]);
 
-        $user = User::where('email', $data['email'])->first();
+        $user = UserModel::where('email', $data['email'])->first();
         if ($user->hasVerifiedEmail()) {
             throw new Exception('Email already verified');
         }
@@ -51,7 +51,7 @@ class EmailVerificationController extends Controller
             'pinCode' => 'required|string|size:6',
         ]);
 
-        $user = User::where('email', $request['email'])->first();
+        $user = UserModel::where('email', $request['email'])->first();
         $verification = EmailVerification::where('user_id', $user->id)
             ->where('pin_code', $data['pinCode'])
             ->where('expires_at', '>', Carbon::now())

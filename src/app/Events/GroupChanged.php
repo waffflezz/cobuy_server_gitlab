@@ -2,8 +2,8 @@
 
 namespace App\Events;
 
+use App\Domain\Entities\Group;
 use App\Http\Resources\Group\GroupResource;
-use App\Models\Group;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;

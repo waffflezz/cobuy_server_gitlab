@@ -2,10 +2,13 @@
 
 namespace App\Http\Requests\Product;
 
+use App\Http\Requests\FileTrait\FileDTOTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProductStoreRequest extends FormRequest
 {
+    use FileDTOTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      */

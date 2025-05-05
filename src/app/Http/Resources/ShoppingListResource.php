@@ -2,7 +2,8 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Product;
+use App\Domain\Entities\Product;
+use App\Models\ProductModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,11 +19,11 @@ class ShoppingListResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'groupId' => $this->group_id,
-            'productsCount' => $this->products->count(),
-            'checkedProductsCount' => $this->products->filter(function (Product $product) {
+            'groupId' => $this->groupId,
+            'productsCount' => count($this->products),
+            'checkedProductsCount' => count(array_filter($this->products, function (Product $product) {
                 return $product->status != 0;
-            })->count(),
+            })),
             'hidden' => $this->hidden
         ];
     }
