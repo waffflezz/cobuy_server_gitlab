@@ -4,6 +4,7 @@ namespace App\Domain\UseCase\Product;
 
 use App\Domain\DTO\FileDTO;
 use App\Domain\DTO\Policy\GroupIdDTO;
+use App\Domain\DTO\Policy\ShoppingListIdDTO;
 use App\Domain\Entities\Product;
 use App\Domain\Services\Auth\AuthorizeServiceInterface;
 use App\Domain\Services\Broadcast\BroadcastServiceInterface;
@@ -23,23 +24,21 @@ class ProductUseCase implements ProductUseCaseInterface
 
     public function findAll(int $shoppingListId): array
     {
+        $this->authorizeService->authorizeGroupMemberByShoppingList(new ShoppingListIdDTO($shoppingListId));
         $shoppingList = $this->shoppingListRepository->findById($shoppingListId);
-
-        $this->authorizeService->authorizeGroupMember(new GroupIdDto($shoppingList->groupId));
 
         return $shoppingList->products;
     }
 
     public function create(int $shoppingListId, array $data): Product
     {
-        $shoppingList = $this->shoppingListRepository->findById($shoppingListId);
-
-        $this->authorizeService->authorizeGroupMember(new GroupIdDto($shoppingList->groupId));
+        $this->authorizeService->authorizeGroupMemberByShoppingList(new ShoppingListIdDTO($shoppingListId));
 
         $data['shopping_list_id'] = $shoppingListId;
         $data['status'] = Product::NONE_STATUS;
 
         $product = $this->productRepository->create($data);
+        $shoppingList = $this->shoppingListRepository->findById($shoppingListId);
 
         $this->broadcastService->broadcastProductChanged($product, EventType::Create);
         $this->broadcastService->broadcastListChanged($shoppingList, EventType::Update);
@@ -49,18 +48,14 @@ class ProductUseCase implements ProductUseCaseInterface
 
     public function findById(int $shoppingListId, int $productId): Product
     {
-        $shoppingList = $this->shoppingListRepository->findById($shoppingListId);
-
-        $this->authorizeService->authorizeGroupMember(new GroupIdDto($shoppingList->groupId));
+        $this->authorizeService->authorizeGroupMemberByShoppingList(new ShoppingListIdDTO($shoppingListId));
 
         return $this->productRepository->findById($productId);
     }
 
     public function update(int $userId, int $shoppingListId, int $productId, array $data): Product
     {
-        $shoppingList = $this->shoppingListRepository->findById($shoppingListId);
-
-        $this->authorizeService->authorizeGroupMember(new GroupIdDto($shoppingList->groupId));
+        $this->authorizeService->authorizeGroupMemberByShoppingList(new ShoppingListIdDTO($shoppingListId));
 
         if (isset($data['status'])) {
             if ($data['status'] !== Product::NONE_STATUS) {
@@ -71,6 +66,7 @@ class ProductUseCase implements ProductUseCaseInterface
         }
 
         $product = $this->productRepository->update($productId, $data);
+        $shoppingList = $this->shoppingListRepository->findById($shoppingListId);
 
         $this->broadcastService->broadcastListChanged($shoppingList, EventType::Update);
         $this->broadcastService->broadcastProductChanged($product, EventType::Update);
@@ -80,8 +76,7 @@ class ProductUseCase implements ProductUseCaseInterface
 
     public function delete(int $shoppingListId, int $productId): void
     {
-        $shoppingList = $this->shoppingListRepository->findById($shoppingListId);
-        $this->authorizeService->authorizeGroupMember(new GroupIdDto($shoppingList->groupId));
+        $this->authorizeService->authorizeGroupMemberByShoppingList(new ShoppingListIdDTO($shoppingListId));
 
         $product = $this->productRepository->destroy($productId);
 
@@ -90,8 +85,7 @@ class ProductUseCase implements ProductUseCaseInterface
 
     public function uploadImage(int $shoppingListId, int $productId, FileDTO $fileDTO): Product
     {
-        $shoppingList = $this->shoppingListRepository->findById($shoppingListId);
-        $this->authorizeService->authorizeGroupMember(new GroupIdDto($shoppingList->groupId));
+        $this->authorizeService->authorizeGroupMemberByShoppingList(new ShoppingListIdDTO($shoppingListId));
 
         $path = $this->fileStorage->storeFile($fileDTO, 'public/products');
 
@@ -104,8 +98,7 @@ class ProductUseCase implements ProductUseCaseInterface
 
     public function destroyImage(int $shoppingListId, int $productId): Product
     {
-        $shoppingList = $this->shoppingListRepository->findById($shoppingListId);
-        $this->authorizeService->authorizeGroupMember(new GroupIdDto($shoppingList->groupId));
+        $this->authorizeService->authorizeGroupMemberByShoppingList(new ShoppingListIdDTO($shoppingListId));
 
         $product = $this->productRepository->destroyImage($productId);
 
