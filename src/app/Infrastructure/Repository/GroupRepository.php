@@ -42,13 +42,10 @@ class GroupRepository implements GroupRepositoryInterface
     /**
      * @throws GroupNotFoundException
      */
-    public function findByUserAndGroupId(int $userId, int $groupId): Group
+    public function findById(int $groupId): Group
     {
         /** @var GroupModel $group */
-        $group = GroupModel::where('id', $groupId)
-            ->whereHas('users', function (Builder $query) use ($userId) {
-                $query->where('users.id', $userId);
-            })->first();
+        $group = GroupModel::find($groupId);
 
         if (!$group) {
             throw new GroupNotFoundException('Group with id ' . $groupId . ' not found');
@@ -173,7 +170,7 @@ class GroupRepository implements GroupRepositoryInterface
             throw new GroupNotFoundException('Group with id ' . $groupId . ' not found');
         }
 
-        $group->inviteLink = $inviteLink;
+        $group->invite_link = $inviteLink;
         $group->save();
 
         return $group->toDomain();

@@ -14,12 +14,11 @@ interface GroupRepositoryInterface
     public function findAll(int $userId): array;
 
     /**
-     * @param int $userId
      * @param int $groupId
      * @return Group
      * @throws GroupNotFoundException
      */
-    public function findByUserAndGroupId(int $userId, int $groupId): Group;
+    public function findById(int $groupId): Group;
     public function create(int $userId, string $name, ?string $image): Group;
     public function update(int $groupId, array $data): Group;
     public function delete(int $groupId): Group;

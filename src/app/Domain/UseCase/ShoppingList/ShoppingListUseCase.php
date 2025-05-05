@@ -26,7 +26,7 @@ class ShoppingListUseCase implements ShoppingListUseCaseInterface
     {
         $this->authorizeService->authorizeGroupMember(new GroupIdDTO($groupId));
 
-        $group = $this->groupRepository->findByUserAndGroupId($userId, $groupId);
+        $group = $this->groupRepository->findById($groupId);
         return $this->shoppingListRepository->findAll($group->id);
     }
 
@@ -37,7 +37,7 @@ class ShoppingListUseCase implements ShoppingListUseCaseInterface
     {
         $this->authorizeService->authorizeGroupMember(new GroupIdDTO($groupId));
 
-        $group = $this->groupRepository->findByUserAndGroupId($userId, $groupId);
+        $group = $this->groupRepository->findById($groupId);
         $shoppingList = $this->shoppingListRepository->create($name, $group->id, $hidden);
 
         $this->broadcastService->broadcastListChanged($shoppingList, EventType::Create);

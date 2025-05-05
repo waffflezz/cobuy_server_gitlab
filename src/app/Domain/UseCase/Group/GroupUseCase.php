@@ -48,7 +48,7 @@ class GroupUseCase implements GroupUseCaseInterface
     public function findById(int $userId, int $groupId): Group
     {
         $this->authorizeService->authorizeGroupMember(new GroupIdDTO($groupId));
-        return $this->groupRepository->findByUserAndGroupId($userId, $groupId);
+        return $this->groupRepository->findById($groupId);
     }
 
     public function update(int $groupId, array $data, ?FileDTO $fileDTO): Group
@@ -133,7 +133,7 @@ class GroupUseCase implements GroupUseCaseInterface
      */
     public function getInviteLink(int $userId, int $groupId): string
     {
-        $group = $this->groupRepository->findByUserAndGroupId($userId, $groupId);
+        $group = $this->groupRepository->findById($groupId);
         $this->authorizeService->authorizeGroupMember(new GroupIdDTO($groupId));
 
         if (is_null($group->inviteLink) || $this->jwtService->isValid($group->inviteLink, 'inviteToken')) {
