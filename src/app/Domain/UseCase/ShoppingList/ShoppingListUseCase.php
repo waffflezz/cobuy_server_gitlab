@@ -3,6 +3,7 @@
 namespace App\Domain\UseCase\ShoppingList;
 
 use App\Domain\DTO\Policy\GroupIdDTO;
+use App\Domain\DTO\Policy\ShoppingListIdDTO;
 use App\Domain\Entities\ShoppingList;
 use App\Domain\Exceptions\GroupNotFoundException;
 use App\Domain\Services\Auth\AuthorizeServiceInterface;
@@ -47,17 +48,14 @@ class ShoppingListUseCase implements ShoppingListUseCaseInterface
 
     public function findById(int $shoppingListId): ShoppingList
     {
-        $shoppingList = $this->shoppingListRepository->findById($shoppingListId);
+        $this->authorizeService->authorizeGroupMemberByShoppingList(new ShoppingListIdDTO($shoppingListId));
 
-        $this->authorizeService->authorizeGroupMember(new GroupIdDTO($shoppingList->groupId));
-
-        return $shoppingList;
+        return $this->shoppingListRepository->findById($shoppingListId);
     }
 
     public function update(int $shoppingListId, array $data): ShoppingList
     {
-        $shoppingList = $this->shoppingListRepository->findById($shoppingListId);
-        $this->authorizeService->authorizeGroupMember(new GroupIdDTO($shoppingList->groupId));
+        $this->authorizeService->authorizeGroupMemberByShoppingList(new ShoppingListIdDTO($shoppingListId));
 
         $shoppingListUpdated = $this->shoppingListRepository->update($shoppingListId, $data);
 
@@ -68,8 +66,7 @@ class ShoppingListUseCase implements ShoppingListUseCaseInterface
 
     public function delete(int $shoppingListId): ShoppingList
     {
-        $shoppingList = $this->shoppingListRepository->findById($shoppingListId);
-        $this->authorizeService->authorizeGroupMember(new GroupIdDTO($shoppingList->groupId));
+        $this->authorizeService->authorizeGroupMemberByShoppingList(new ShoppingListIdDTO($shoppingListId));
 
         $shoppingListDestroyed = $this->shoppingListRepository->destroy($shoppingListId);
 
