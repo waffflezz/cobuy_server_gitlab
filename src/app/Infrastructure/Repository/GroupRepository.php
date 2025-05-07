@@ -21,7 +21,7 @@ class GroupRepository implements GroupRepositoryInterface
     {
         /** @var GroupModel $group */
         $groups = GroupModel::whereHas('users', function ($query) use ($userId) {
-            $query->where('owner_id', $userId);
+            $query->where('users.id', $userId);
         })->latest()->get();
 
         return $groups->map(fn(GroupModel $groupModel) => $groupModel->toDomain())->all();
