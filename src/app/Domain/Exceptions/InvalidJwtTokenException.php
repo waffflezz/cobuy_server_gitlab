@@ -2,7 +2,7 @@
 
 namespace App\Domain\Exceptions;
 
-class InvalidJwtTokenException extends \Exception
+class InvalidJwtTokenException extends DomainException
 {
 
 }

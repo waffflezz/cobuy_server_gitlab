@@ -37,7 +37,7 @@ class ShoppingListRepository implements ShoppingListRepositoryInterface
         $shoppingListModel = ShoppingListModel::find($id);
 
         if (!$shoppingListModel) {
-            throw new ShoppingListNotFoundException('Shopping list with id ' . $id . ' was not found.');
+            throw new ShoppingListNotFoundException('Shopping list with id ' . $id . ' was not found.', 404);
         }
 
         return $shoppingListModel->toDomain();
@@ -52,7 +52,7 @@ class ShoppingListRepository implements ShoppingListRepositoryInterface
         $shoppingList = ShoppingListModel::find($id);
 
         if (!$shoppingList) {
-            throw new ShoppingListNotFoundException('Shopping list with id ' . $id . ' was not found.');
+            throw new ShoppingListNotFoundException('Shopping list with id ' . $id . ' was not found.', 404);
         }
 
         $shoppingList->update($data);
@@ -68,7 +68,7 @@ class ShoppingListRepository implements ShoppingListRepositoryInterface
         $shoppingList = ShoppingListModel::find($id);
 
         if (!$shoppingList) {
-            throw new ShoppingListNotFoundException('Shopping list with id ' . $id . ' was not found.');
+            throw new ShoppingListNotFoundException('Shopping list with id ' . $id . ' was not found.', 404);
         }
 
         $shoppingList->delete();

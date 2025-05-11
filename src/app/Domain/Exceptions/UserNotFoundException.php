@@ -2,7 +2,9 @@
 
 namespace App\Domain\Exceptions;
 
-class UserNotFoundException extends \Exception
+use Throwable;
+
+class UserNotFoundException extends DomainException
 {
 
 }

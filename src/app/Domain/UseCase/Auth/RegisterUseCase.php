@@ -31,7 +31,7 @@ class RegisterUseCase implements RegisterUseCaseInterface
         $user = $this->userRepository->findByEmail($email);
 
         if (!$user) {
-            throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException("Invalid email");
         }
 
         if (!$this->hasher->check($password, $user->password)) {
