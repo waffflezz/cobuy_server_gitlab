@@ -31,11 +31,11 @@ class RegisterUseCase implements RegisterUseCaseInterface
         $user = $this->userRepository->findByEmail($email);
 
         if (!$user) {
-            throw new UserNotFoundException("Invalid email");
+            throw new UserNotFoundException("Invalid email", 401);
         }
 
         if (!$this->hasher->check($password, $user->password)) {
-            throw new InvalidCredentialsException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials", 401);
         }
 
         $token = $this->userRepository->createToken($user->id);
