@@ -43,9 +43,17 @@ class RegisterUseCase implements RegisterUseCaseInterface
         return new LoginResultDTO($user, $token);
     }
 
+    /**
+     * @throws UserNotFoundException
+     */
     public function logout(int $userId): void
     {
         $user = $this->userRepository->findById($userId);
+
+        if (!$user) {
+            throw new UserNotFoundException("User not found", 404);
+        }
+
         $this->userRepository->deleteToken($user->id);
     }
 }
