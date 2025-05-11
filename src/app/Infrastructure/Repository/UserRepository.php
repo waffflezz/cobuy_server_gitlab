@@ -40,7 +40,7 @@ class UserRepository implements UserRepositoryInterface
        $updateUser = UserModel::find($user->id);
 
        if (!$updateUser) {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException("User with id {$user->id} was not found", 404);
        }
 
        $updateUser->fill($user->toArray());
@@ -54,7 +54,7 @@ class UserRepository implements UserRepositoryInterface
     {
         $user = UserModel::find($userid);
         if (!$user) {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException("User with id {$userid} was not found", 404);
         }
 
         return $user->createToken('auth_token')->plainTextToken;
@@ -67,7 +67,7 @@ class UserRepository implements UserRepositoryInterface
     {
         $user = UserModel::find($userId);
         if (!$user) {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException("User with id $userId was not found", 404);
         }
 
         $user->tokens()->delete();
@@ -77,13 +77,13 @@ class UserRepository implements UserRepositoryInterface
     {
         $tokenModel = PersonalAccessToken::findToken($token);
         if (!$tokenModel) {
-            throw new InvalidTokenException('Invalid or expired token');
+            throw new InvalidTokenException('Invalid or expired token', 404);
         }
 
         $user = $tokenModel->tokenable;
 
         if (!$user) {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException("User not found", 404);
         }
 
         return $user->toDomain();

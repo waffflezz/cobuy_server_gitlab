@@ -2,7 +2,7 @@
 
 namespace App\Domain\Exceptions;
 
-class InvalidTokenException extends \Exception
+class InvalidTokenException extends DomainException
 {
 
 }

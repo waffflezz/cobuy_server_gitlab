@@ -2,7 +2,9 @@
 
 namespace App\Domain\Exceptions;
 
-class ShoppingListNotFoundException extends \Exception
+use Throwable;
+
+class ShoppingListNotFoundException extends DomainException
 {
 
 }

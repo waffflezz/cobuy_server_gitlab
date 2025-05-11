@@ -2,7 +2,9 @@
 
 namespace App\Domain\Exceptions;
 
-class UserAlreadyInvitedException extends \Exception
+use Throwable;
+
+class UserAlreadyInvitedException extends DomainException
 {
 
 }

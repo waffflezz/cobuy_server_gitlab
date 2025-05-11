@@ -8,8 +8,6 @@ use App\Domain\Exceptions\UserAlreadyInvitedException;
 use App\Domain\Exceptions\UserNotFoundException;
 use App\Domain\UseCase\Group\GroupRepositoryInterface;
 use App\Models\GroupModel;
-use Illuminate\Database\Eloquent\Builder;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class GroupRepository implements GroupRepositoryInterface
 {
@@ -48,7 +46,7 @@ class GroupRepository implements GroupRepositoryInterface
         $group = GroupModel::find($groupId);
 
         if (!$group) {
-            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found');
+            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found', 404);
         }
 
         return $group->toDomain();
@@ -63,7 +61,7 @@ class GroupRepository implements GroupRepositoryInterface
         $updatedGroup = GroupModel::find($groupId);
 
         if (!$updatedGroup) {
-            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found');
+            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found', 404);
         }
 
         $updatedGroup->fill($data);
@@ -80,7 +78,7 @@ class GroupRepository implements GroupRepositoryInterface
         $group = GroupModel::find($groupId);
 
         if (!$group) {
-            throw new GroupNotFoundException('Group with ID ' . $groupId . ' not found');
+            throw new GroupNotFoundException('Group with ID ' . $groupId . ' not found', 404);
         }
 
         $group->delete();
@@ -105,7 +103,7 @@ class GroupRepository implements GroupRepositoryInterface
         /** @var GroupModel $group */
         $group = GroupModel::find($groupId);
         if (!$group->users()->where('users.id', $userId)->exists()) {
-            throw new UserNotFoundException('User with id ' . $userId . ' not found');
+            throw new UserNotFoundException('User with id ' . $userId . ' not found', 404);
         }
 
         $group->users()->detach($userId);
@@ -121,7 +119,7 @@ class GroupRepository implements GroupRepositoryInterface
         $group = GroupModel::find($groupId);
 
         if (!$group) {
-            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found');
+            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found', 404);
         }
 
         $group->image = $image;
@@ -138,7 +136,7 @@ class GroupRepository implements GroupRepositoryInterface
         /** @var GroupModel $group */
         $group = GroupModel::find($groupId);
         if (!$group) {
-            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found');
+            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found', 404);
         }
 
         $group->image = null;
@@ -154,7 +152,7 @@ class GroupRepository implements GroupRepositoryInterface
         /** @var GroupModel $group */
         $group = GroupModel::find($groupId);
         if (!$group) {
-            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found');
+            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found', 404);
         }
         return $group->image;
     }
@@ -167,7 +165,7 @@ class GroupRepository implements GroupRepositoryInterface
         $group = GroupModel::find($groupId);
 
         if (!$group) {
-            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found');
+            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found', 404);
         }
 
         $group->invite_link = $inviteLink;
@@ -184,7 +182,7 @@ class GroupRepository implements GroupRepositoryInterface
         $group = GroupModel::find($groupId);
 
         if (!$group) {
-            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found');
+            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found', 404);
         }
 
         return $group->inviteLink;
@@ -200,11 +198,11 @@ class GroupRepository implements GroupRepositoryInterface
         $group = GroupModel::find($groupId);
 
         if (!$group) {
-            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found');
+            throw new GroupNotFoundException('Group with id ' . $groupId . ' not found', 404);
         }
 
         if ($group->users()->where('users.id', $userId)->exists()) {
-            throw new UserAlreadyInvitedException('User with id ' . $userId . ' already invited');
+            throw new UserAlreadyInvitedException('User with id ' . $userId . ' already invited', 409);
         }
 
         $group->users()->syncWithoutDetaching([$userId]);

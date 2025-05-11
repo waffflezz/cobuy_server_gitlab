@@ -36,7 +36,7 @@ class ProductRepository implements ProductRepositoryInterface
         $product = ProductModel::find($productId);
 
         if (!$product) {
-            throw new ProductNotFoundException('Product with id ' . $productId . ' not found');
+            throw new ProductNotFoundException('Product with id ' . $productId . ' not found', 404);
         }
 
         return $product->toDomain();
@@ -50,7 +50,7 @@ class ProductRepository implements ProductRepositoryInterface
         $product = ProductModel::find($productId);
 
         if (!$product) {
-            throw new ProductNotFoundException('Product with id ' . $productId . ' not found');
+            throw new ProductNotFoundException('Product with id ' . $productId . ' not found', 404);
         }
 
         $product->update($data);
@@ -66,7 +66,7 @@ class ProductRepository implements ProductRepositoryInterface
         $product = ProductModel::find($productId);
 
         if (!$product) {
-            throw new ProductNotFoundException('Product with id ' . $productId . ' not found');
+            throw new ProductNotFoundException('Product with id ' . $productId . ' not found', 404);
         }
 
         $product->delete();
@@ -82,7 +82,7 @@ class ProductRepository implements ProductRepositoryInterface
         $product = ProductModel::find($productId);
 
         if (!$product) {
-            throw new ProductNotFoundException('Product with id ' . $productId . ' not found');
+            throw new ProductNotFoundException('Product with id ' . $productId . ' not found', 404);
         }
 
         $product->update(['image' => $image]);
@@ -98,7 +98,7 @@ class ProductRepository implements ProductRepositoryInterface
         $product = ProductModel::find($productId);
 
         if (!$product) {
-            throw new ProductNotFoundException('Product with id ' . $productId . ' not found');
+            throw new ProductNotFoundException('Product with id ' . $productId . ' not found', 404);
         }
 
         $product->image = null;

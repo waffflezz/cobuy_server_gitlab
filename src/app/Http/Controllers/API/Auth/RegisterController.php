@@ -41,22 +41,12 @@ class RegisterController extends Controller
     {
         $request->validated();
 
-        try {
-            $loginResult = $this->registerUseCase->login(
-                $request->email,
-                $request->password,
-            );
+        $loginResult = $this->registerUseCase->login(
+            $request->email,
+            $request->password,
+        );
 
-            return new LoginUserResource($loginResult);
-        } catch (UserNotFoundException $exception) {
-            throw ValidationException::withMessages([
-                'email' => $exception->getMessage(),
-            ]);
-        } catch (InvalidCredentialsException $exception) {
-            throw ValidationException::withMessages([
-                'password' => $exception->getMessage(),
-            ]);
-        }
+        return new LoginUserResource($loginResult);
     }
 
     public function logout(): JsonResponse

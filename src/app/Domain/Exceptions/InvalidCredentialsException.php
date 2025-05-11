@@ -2,7 +2,7 @@
 
 namespace App\Domain\Exceptions;
 
-class InvalidCredentialsException extends \Exception
+class InvalidCredentialsException extends DomainException
 {
 
 }

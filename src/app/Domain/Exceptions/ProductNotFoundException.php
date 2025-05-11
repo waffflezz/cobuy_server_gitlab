@@ -2,7 +2,9 @@
 
 namespace App\Domain\Exceptions;
 
-class ProductNotFoundException extends \Exception
+use Throwable;
+
+class ProductNotFoundException extends DomainException
 {
 
 }
