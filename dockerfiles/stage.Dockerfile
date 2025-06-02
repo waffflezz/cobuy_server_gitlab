@@ -35,7 +35,13 @@ RUN apt-get update && apt-get install -y \
     php8.3-intl \
     php8.3-opcache \
     php8.3-gd \
+    php8.3-xdebug \
     && apt-get clean
+
+RUN echo "xdebug.mode=debug" >> /etc/php/8.3/cli/conf.d/20-xdebug.ini \
+    && echo "xdebug.start_with_request=yes" >> /etc/php/8.3/cli/conf.d/20-xdebug.ini \
+    && echo "xdebug.client_host=host.docker.internal" >> /etc/php/8.3/cli/conf.d/20-xdebug.ini \
+    && echo "xdebug.client_port=9010" >> /etc/php/8.3/cli/conf.d/20-xdebug.ini
 
 COPY ./configs/nginx.conf /etc/nginx/nginx.conf
 COPY ./configs/nginx.prod.conf /etc/nginx/conf.d/default.conf

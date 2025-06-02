@@ -35,6 +35,10 @@ services:
     entrypoint: [ "sh", "-c", "php artisan migrate && php artisan serve --host=0.0.0.0" ]
     depends_on:
       - db_dev
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - PHP_IDE_CONFIG=serverName=laravel_dev
 
   db_dev:
     image: postgres:latest
