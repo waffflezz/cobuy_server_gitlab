@@ -25,7 +25,7 @@ class ProductUpdateImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'image|max:10240',
+            'image' => 'required|image|max:10240',
         ];
     }
 }

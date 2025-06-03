@@ -19,7 +19,7 @@ interface GroupUseCaseInterface
     public function delete(int $groupId): Group;
     public function leave(int $userId, int $groupId): Group;
     public function kick(int $userId, int $groupId): Group;
-    public function uploadImage(int $groupId, FileDTO $fileDTO): Group;
+    public function uploadImage(int $groupId, ?FileDTO $fileDTO): Group;
     public function showImage(int $groupId): ImageResultDTO;
     public function destroyImage(int $groupId): Group;
     public function getInviteLink(int $userId, int $groupId): string;

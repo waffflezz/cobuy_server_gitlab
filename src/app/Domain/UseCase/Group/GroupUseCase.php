@@ -6,6 +6,7 @@ use App\Domain\DTO\FileDTO;
 use App\Domain\DTO\ImageResultDTO;
 use App\Domain\DTO\Policy\GroupIdDTO;
 use App\Domain\Entities\Group;
+use App\Domain\Exceptions\FileIsNullException;
 use App\Domain\Exceptions\GroupNotFoundException;
 use App\Domain\Services\Auth\AuthorizeServiceInterface;
 use App\Domain\Services\Broadcast\BroadcastServiceInterface;
@@ -98,8 +99,15 @@ class GroupUseCase implements GroupUseCaseInterface
         return $group;
     }
 
-    public function uploadImage(int $groupId, FileDTO $fileDTO): Group
+    /**
+     * @throws FileIsNullException
+     */
+    public function uploadImage(int $groupId, ?FileDTO $fileDTO): Group
     {
+        if (!$fileDTO) {
+            throw new FileIsNullException('Image is must be uploaded', 422);
+        }
+
         $this->authorizeService->authorizeGroupOwner(new GroupIdDTO($groupId));
 
         $path = $this->fileStorage->storeFile($fileDTO, 'public/groups');
