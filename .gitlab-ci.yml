@@ -61,14 +61,14 @@ migrate_stage:
     - .migrate_job
 
 test_stage:
-  needs: [build_stage]
+  needs: [migrate_stage]
   when: on_success
   extends:
     - .stage-env
     - .test_job
 
 deploy_stage:
-  needs: [migrate_stage]
+  needs: [test_stage]
   extends:
     - .stage-env
     - .deploy_job
@@ -85,13 +85,13 @@ migrate_prod:
     - .migrate_job
 
 test_prod:
-  needs: [build_prod]
+  needs: [migrate_prod]
   extends:
     - .prod-env
     - .test_job
 
 deploy_prod:
-  needs: [migrate_prod]
+  needs: [test_prod]
   extends:
     - .prod-env
     - .deploy_job
