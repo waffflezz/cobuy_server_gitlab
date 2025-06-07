@@ -6,6 +6,7 @@ variables:
 stages:
   - build
   - migrate
+  - test
   - deploy
 
 .stage-env:
@@ -35,6 +36,13 @@ stages:
     - docker build -f dockerfiles/migrate.Dockerfile -t migrate_tmp .
     - docker run --rm migrate_tmp
 
+.test_job:
+  stage: test
+  script:
+    - cp -f $ENV /src/.env
+    - docker build -f dockerfiles/test.Dockerfile -t test_tmp
+    - docker run --rm test_tmp
+
 .deploy_job:
   stage: deploy
   script:
@@ -52,6 +60,13 @@ migrate_stage:
     - .stage-env
     - .migrate_job
 
+test_stage:
+  needs: [build_stage]
+  when: on_success
+  extends:
+    - .stage-env
+    - .test_job
+
 deploy_stage:
   needs: [migrate_stage]
   extends:
@@ -68,6 +83,12 @@ migrate_prod:
   extends:
     - .prod-env
     - .migrate_job
+
+test_prod:
+  needs: [build_prod]
+  extends:
+    - .prod-env
+    - .test_job
 
 deploy_prod:
   needs: [migrate_prod]
