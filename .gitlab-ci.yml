@@ -39,7 +39,7 @@ stages:
 .test_job:
   stage: test
   script:
-    - cp -f $ENV /src/.env
+    - cp -f $ENV ./src/.env
     - docker build -f dockerfiles/test.Dockerfile -t test_tmp
     - docker run --rm test_tmp
 
