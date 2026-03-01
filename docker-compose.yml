@@ -25,19 +25,19 @@ services:
   app_dev:
     build:
       context: .
-      dockerfile: dockerfiles/stage.Dockerfile
+      dockerfile: dockerfiles/dev.Dockerfile
     container_name: laravel_dev
     volumes:
-      - storage_stage:/var/www/html/storage
-    restart: no
+      - ./src:/var/www/html
     ports:
       - "8000:8000"
-    entrypoint: [ "sh", "-c", "php artisan migrate && php artisan serve --host=0.0.0.0" ]
     depends_on:
-      - db_dev
+      db_dev:
+        condition: service_healthy
+    restart: no
 
   db_dev:
-    image: postgres:latest
+    image: postgres:18
     container_name: postgres_dev
     environment:
       POSTGRES_USER: laravel
@@ -46,8 +46,13 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U laravel -d laravel_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   storage_prod:
