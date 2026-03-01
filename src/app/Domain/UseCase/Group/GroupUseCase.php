@@ -32,7 +32,7 @@ class GroupUseCase implements GroupUseCaseInterface
     {
         $path = null;
         if ($fileDTO) {
-            $path = $this->fileStorage->storeFile($fileDTO, 'public/groups');
+            $path = $this->fileStorage->storeFile($fileDTO, 'groups');
         }
 
         $group = $this->groupRepository->create($userId, $name, $path);

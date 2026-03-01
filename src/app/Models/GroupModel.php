@@ -40,7 +40,7 @@ class GroupModel extends Model
         return new Group(
             $this->id,
             $this->name,
-            $this->iamge,
+            $this->image,
             $this->owner_id,
             new \DateTime($this->created_at),
             new \DateTime($this->updated_at),
