@@ -9,11 +9,11 @@ interface ProductUseCaseInterface
 {
     public function findAll(int $shoppingListId): array;
 
-    public function create(int $shoppingListId, array $data): Product;
+    public function create(int $userId, int $shoppingListId, array $data, ?FileDTO $fileDTO): Product;
 
     public function findById(int $shoppingListId, int $productId): Product;
 
-    public function update(int $userId, int $shoppingListId, int $productId, array $data): Product;
+    public function update(int $userId, int $shoppingListId, int $productId, array $data, ?FileDTO $fileDTO): Product;
 
     public function delete(int $shoppingListId, int $productId): void;
 

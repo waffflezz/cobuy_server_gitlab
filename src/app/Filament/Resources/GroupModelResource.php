@@ -42,12 +42,10 @@ class GroupModelResource extends Resource
                         Forms\Components\FileUpload::make('image')
                             ->label('Изображение')
                             ->image()
-                            ->directory('tmp')
-                            ->disk('local')
-                            ->preserveFilenames(),
+                            ->storeFiles(false),
 
                         Forms\Components\TextInput::make('invite_link')
-                            ->label('Invite ссылка')
+                            ->label('Invite токен')
                             ->disabled()
                             ->dehydrated(false)
                     ])->columns(),

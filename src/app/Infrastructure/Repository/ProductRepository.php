@@ -20,10 +20,18 @@ class ProductRepository implements ProductRepositoryInterface
         return $products->map(fn (ProductModel $productModel) => $productModel->toDomain())->all();
     }
 
-    public function create(array $data): Product
+    public function create(array $data, ?string $image): Product
     {
         /** @var ProductModel $product */
-        $product = ProductModel::create($data);
+        $product = ProductModel::create([
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'status' => $data['status'],
+            'shopping_list_id' => $data['shopping_list_id'],
+            'image' => $image,
+            'price' => $data['price'],
+            'count' => $data['count'],
+        ]);
 
         return $product->toDomain();
     }

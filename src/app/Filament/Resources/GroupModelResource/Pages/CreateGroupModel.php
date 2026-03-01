@@ -9,6 +9,7 @@ use App\Models\GroupModel;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class CreateGroupModel extends CreateRecord
 {
@@ -19,13 +20,13 @@ class CreateGroupModel extends CreateRecord
         $groupUseCase = app(GroupUseCaseInterface::class);
 
         $fileDTO = null;
-        $imagePath = $data['image'] ?? null;
-        if (is_string($imagePath) && $imagePath !== '') {
-            $absPath = Storage::disk('local')->path($imagePath);
+        $uploaded = $data['image'] ?? null;
+
+        if ($uploaded instanceof TemporaryUploadedFile) {
             $fileDTO = new FileDTO(
-                originalName: basename($imagePath),
-                extension: pathinfo($imagePath, PATHINFO_EXTENSION),
-                temporaryPath: $absPath,
+                originalName: $uploaded->getClientOriginalName(),
+                extension: $uploaded->getClientOriginalExtension(),
+                temporaryPath: $uploaded->getRealPath(),
             );
         }
 

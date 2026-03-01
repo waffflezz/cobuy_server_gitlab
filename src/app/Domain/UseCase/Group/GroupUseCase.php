@@ -56,7 +56,7 @@ class GroupUseCase implements GroupUseCaseInterface
         $this->authorizeService->authorizeGroupOwner(new GroupIdDTO($groupId));
 
         if ($fileDTO) {
-            $path = $this->fileStorage->storeFile($fileDTO, 'public/groups');
+            $path = $this->fileStorage->storeFile($fileDTO, 'groups');
             $data['image'] = $path;
         }
 

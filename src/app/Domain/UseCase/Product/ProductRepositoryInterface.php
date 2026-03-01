@@ -8,7 +8,7 @@ interface ProductRepositoryInterface
 {
     public function findAll(int $shoppingListId): array;
 
-    public function create(array $data): Product;
+    public function create(array $data, ?string $image): Product;
 
     public function findById(int $productId): Product;
 

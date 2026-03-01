@@ -34,8 +34,9 @@ class ProductController extends Controller
     public function store(ProductStoreRequest $request, string $shoppingListId)
     {
         $data = $request->validated();
+        $fileDTO = $request->getFileDTO();
 
-        $product = $this->productUseCase->create($shoppingListId, $data);
+        $product = $this->productUseCase->create(Auth::id(), $shoppingListId, $data, $fileDTO);
 
         return new ProductResource($product);
     }
@@ -56,8 +57,9 @@ class ProductController extends Controller
     public function update(ProductUpdateRequest $request, string $shoppingListId, string $id)
     {
         $data = $request->validated();
+        $fileDTO = $request->getFileDTO();
 
-        $product = $this->productUseCase->update(Auth::id(), $shoppingListId, $id, $data);
+        $product = $this->productUseCase->update(Auth::id(), $shoppingListId, $id, $data, $fileDTO);
 
         return new ProductResource($product);
     }

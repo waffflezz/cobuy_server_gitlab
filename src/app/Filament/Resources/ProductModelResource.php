@@ -73,10 +73,8 @@ class ProductModelResource extends Resource
                     Forms\Components\FileUpload::make('image')
                         ->label('Изображение')
                         ->image()
-                        ->disk('public')
-                        ->directory('products')
+                        ->storeFiles(false)
                         ->imageEditor()
-                        ->maxSize(4096),
                 ])->columns(2),
         ]);
     }

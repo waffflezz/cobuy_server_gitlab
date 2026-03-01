@@ -30,14 +30,20 @@ class ProductUseCase implements ProductUseCaseInterface
         return $shoppingList->products;
     }
 
-    public function create(int $shoppingListId, array $data): Product
+    public function create(int $userId, int $shoppingListId, array $data, ?FileDTO $fileDTO): Product
     {
         $this->authorizeService->authorizeGroupMemberByShoppingList(new ShoppingListIdDTO($shoppingListId));
 
         $data['shopping_list_id'] = $shoppingListId;
         $data['status'] = Product::NONE_STATUS;
 
-        $product = $this->productRepository->create($data);
+
+        $path = null;
+        if ($fileDTO) {
+            $path = $this->fileStorage->storeFile($fileDTO, 'products');
+        }
+
+        $product = $this->productRepository->create($data, $path);
         $shoppingList = $this->shoppingListRepository->findById($shoppingListId);
 
         $this->broadcastService->broadcastProductChanged($product, EventType::Create);
@@ -53,12 +59,17 @@ class ProductUseCase implements ProductUseCaseInterface
         return $this->productRepository->findById($productId);
     }
 
-    public function update(int $userId, int $shoppingListId, int $productId, array $data): Product
+    public function update(int $userId, int $shoppingListId, int $productId, array $data, ?FileDTO $fileDTO): Product
     {
         $this->authorizeService->authorizeGroupMemberByShoppingList(new ShoppingListIdDTO($shoppingListId));
 
+        if ($fileDTO) {
+            $path = $this->fileStorage->storeFile($fileDTO, 'products');
+            $data['image'] = $path;
+        }
+
         if (isset($data['status'])) {
-            if ($data['status'] !== Product::NONE_STATUS) {
+            if ((int) $data['status'] !== Product::NONE_STATUS) {
                 $data['buyer_id'] = $userId;
             } else {
                 $data['buyer_id'] = null;
@@ -87,7 +98,7 @@ class ProductUseCase implements ProductUseCaseInterface
     {
         $this->authorizeService->authorizeGroupMemberByShoppingList(new ShoppingListIdDTO($shoppingListId));
 
-        $path = $this->fileStorage->storeFile($fileDTO, 'public/products');
+        $path = $this->fileStorage->storeFile($fileDTO, 'products');
 
         $product = $this->productRepository->uploadImage($productId, $path);
 
